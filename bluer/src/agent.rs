@@ -266,9 +266,9 @@ impl Agent {
         match (keyboard, display_only, yes_no) {
             (true, false, false) => "KeyboardOnly",
             (false, true, false) => "DisplayOnly",
-            (false, _, true) => "DisplayYesNo",
+            (false, true, true) => "DisplayYesNo",
             (true, true, _) | (true, _, true) => "KeyboardDisplay",
-            (false, false, false) => "NoInputNoOutput",
+            (false, false, _) => "NoInputNoOutput",
         }
     }
 }
