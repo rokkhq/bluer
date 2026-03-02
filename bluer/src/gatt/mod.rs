@@ -59,6 +59,18 @@ define_flags!(pub CharacteristicFlags, "Bluetooth GATT characteristic flags." =>
     secure_read ("secure-read"),
     /// Require security for writing.
     secure_write ("secure-write"),
+    /// Require encryption for subscribing to notifications.
+    encrypt_notify ("encrypt-notify"),
+    /// Require authentication for subscribing to notifications.
+    encrypt_authenticated_notify ("encrypt-authenticated-notify"),
+    /// Require security for subscribing to notifications.
+    secure_notify ("secure-notify"),
+    /// Require encryption for subscribing to indications.
+    encrypt_indicate ("encrypt-indicate"),
+    /// Require authentication for subscribing to indications.
+    encrypt_authenticated_indicate ("encrypt-authenticated-indicate"),
+    /// Require security for subscribing to indications.
+    secure_indicate ("secure-indicate"),
     /// Authorize flag.
     authorize ("authorize"),
 });

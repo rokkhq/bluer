@@ -375,6 +375,18 @@ pub struct CharacteristicNotify {
     ///
     /// Confirmations will only be provided when this is [true] and [notify](Self::notify) is [false].
     pub indicate: bool,
+    /// Require encryption for subscribing to notifications.
+    pub encrypt_notify: bool,
+    /// Require authentication for subscribing to notifications.
+    pub encrypt_authenticated_notify: bool,
+    /// Require security for subscribing to notifications.
+    pub secure_notify: bool,
+    /// Require encryption for subscribing to indications.
+    pub encrypt_indicate: bool,
+    /// Require authentication for subscribing to indications.
+    pub encrypt_authenticated_indicate: bool,
+    /// Require security for subscribing to indications.
+    pub secure_indicate: bool,
     /// Notification and indication method.
     pub method: CharacteristicNotifyMethod,
     #[doc(hidden)]
@@ -385,6 +397,12 @@ impl CharacteristicNotify {
     fn set_characteristic_flags(&self, f: &mut CharacteristicFlags) {
         f.notify = self.notify;
         f.indicate = self.indicate;
+        f.encrypt_notify = self.encrypt_notify;
+        f.encrypt_authenticated_notify = self.encrypt_authenticated_notify;
+        f.secure_notify = self.secure_notify;
+        f.encrypt_indicate = self.encrypt_indicate;
+        f.encrypt_authenticated_indicate = self.encrypt_authenticated_indicate;
+        f.secure_indicate = self.secure_indicate;
     }
 }
 
@@ -792,7 +810,9 @@ impl RegisteredCharacteristic {
                 if let Some(notify) = &reg.c.notify {
                     notify.set_characteristic_flags(&mut flags);
                 }
-                Some(flags.as_vec())
+                let flags_vec = flags.as_vec();
+                log::debug!("Characteristic {} flags: {:?}", reg.c.uuid, flags_vec);
+                Some(flags_vec)
             });
             ib.property("Service").get(|ctx, _| Ok(parent_path(ctx.path())));
             ib.property("Handle").get(|_ctx, reg| Ok(reg.c.handle.map(|h| h.get()).unwrap_or_default())).set(
@@ -854,7 +874,7 @@ impl RegisteredCharacteristic {
                             method: CharacteristicNotifyMethod::Fun(notify_fn),
                             indicate,
                             notify,
-                            _non_exhaustive: (),
+                            ..
                         }) => {
                             let (stop_notify_tx, stop_notify_rx) = mpsc::channel(1);
                             let (confirm_tx, confirm_rx) = if *indicate && !*notify {
