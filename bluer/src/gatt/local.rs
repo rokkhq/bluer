@@ -375,6 +375,11 @@ pub struct CharacteristicNotify {
     ///
     /// Confirmations will only be provided when this is [true] and [notify](Self::notify) is [false].
     pub indicate: bool,
+    /// Require encryption.
+    ///
+    /// When set, the client must have an encrypted connection (i.e. be paired)
+    /// before it can subscribe to notifications or indications via the CCCD.
+    pub encrypt_notify: bool,
     /// Notification and indication method.
     pub method: CharacteristicNotifyMethod,
     #[doc(hidden)]
@@ -385,6 +390,9 @@ impl CharacteristicNotify {
     fn set_characteristic_flags(&self, f: &mut CharacteristicFlags) {
         f.notify = self.notify;
         f.indicate = self.indicate;
+        if self.encrypt_notify {
+            f.encrypt_read = true;
+        }
     }
 }
 
@@ -854,7 +862,7 @@ impl RegisteredCharacteristic {
                             method: CharacteristicNotifyMethod::Fun(notify_fn),
                             indicate,
                             notify,
-                            _non_exhaustive: (),
+                            ..
                         }) => {
                             let (stop_notify_tx, stop_notify_rx) = mpsc::channel(1);
                             let (confirm_tx, confirm_rx) = if *indicate && !*notify {
