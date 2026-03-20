@@ -59,6 +59,10 @@ define_flags!(pub CharacteristicFlags, "Bluetooth GATT characteristic flags." =>
     secure_read ("secure-read"),
     /// Require security for writing.
     secure_write ("secure-write"),
+    /// Require encryption for notifications.
+    encrypt_notify ("encrypt-notify"),
+    /// Require encryption for indications.
+    encrypt_indicate ("encrypt-indicate"),
     /// Authorize flag.
     authorize ("authorize"),
 });
