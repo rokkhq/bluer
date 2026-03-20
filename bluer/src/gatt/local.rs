@@ -391,8 +391,7 @@ impl CharacteristicNotify {
         f.notify = self.notify;
         f.indicate = self.indicate;
         if self.encrypt_notify {
-            f.encrypt_read = true;
-            f.encrypt_write = true;
+            f.encrypt_notify = true;
         }
     }
 }
